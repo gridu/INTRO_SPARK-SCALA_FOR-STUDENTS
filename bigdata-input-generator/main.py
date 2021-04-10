@@ -82,6 +82,12 @@ class DataGenerator:
                 res.append(mobile_event)
         return res
 
+def write_data(dataset, dataset_name, num, args):
+    dataset_name_csv = f'{dataset_name}_{num}.csv'
+    with open(os.path.join(args.output_path, dataset_name, dataset_name_csv), 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, dataset[0].keys())
+        writer.writeheader()
+        writer.writerows(dataset)
 
 def main():
     parser = argparse.ArgumentParser(prog='dlz_ingestion_service')
@@ -98,20 +104,9 @@ def main():
         recreate_local_folder(os.path.join(args.output_path, 'mobile_app_clickstream'))
         for num in range(0, 50):
             purchases = ingestion_starter.generate_purchases(size=10000)
-            purchase_name_csv = f'user_purchases_{num}.csv'
-            with open(os.path.join(args.output_path, 'user_purchases', purchase_name_csv), 'w') as csvfile:
-                writer = csv.DictWriter(csvfile, purchases[0].keys())
-                writer.writeheader()
-                writer.writerows(purchases)
-
             clickstream = ingestion_starter.generate_mobile_app_clickstream(purchases)
-            clickstream_name_csv = f'mobile_app_clickstream_{num}.csv'
-            with open(os.path.join(args.output_path, 'mobile_app_clickstream', clickstream_name_csv), 'w') as csvfile:
-                writer = csv.DictWriter(csvfile, clickstream[0].keys())
-                writer.writeheader()
-                writer.writerows(clickstream)
-
-
+            write_data(purchases, 'user_purchases', num, args)
+            write_data(clickstream, 'mobile_app_clickstream', num, args)
 
     except Exception:
         logging.error(traceback.format_exc())

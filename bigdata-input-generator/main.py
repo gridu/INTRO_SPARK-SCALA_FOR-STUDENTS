@@ -1,5 +1,6 @@
 import argparse
 import csv
+import gzip
 import datetime
 
 import logging
@@ -83,8 +84,8 @@ class DataGenerator:
         return res
 
 def write_data(dataset, dataset_name, num, args):
-    dataset_name_csv = f'{dataset_name}_{num}.csv'
-    with open(os.path.join(args.output_path, dataset_name, dataset_name_csv), 'w') as csvfile:
+    dataset_name_csv = f'{dataset_name}_{num}.csv.gz'
+    with gzip.open(os.path.join(args.output_path, dataset_name, dataset_name_csv), 'wt') as csvfile:
         writer = csv.DictWriter(csvfile, dataset[0].keys())
         writer.writeheader()
         writer.writerows(dataset)

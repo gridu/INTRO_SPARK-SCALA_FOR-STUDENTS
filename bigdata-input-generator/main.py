@@ -1,6 +1,6 @@
 import argparse
 import csv
-import datetime
+import gzip
 
 import logging
 import os
@@ -9,9 +9,9 @@ import shutil
 import sys
 import traceback
 from faker import Faker
-from mimesis import Cryptographic
 from mimesis.random import Random
 from mimesis.schema import Field, Schema
+from datetime import datetime, timedelta
 import random
 import json
 
@@ -20,14 +20,23 @@ class DataGenerator:
 
     def __init__(self, root_output_path):
         self.root_output_path = root_output_path
+        self.random = random
+        self.fake = Faker()
+        self.random_mimesis = Random()
+        self.random.seed(0)
+        self.random_mimesis.seed(0)
+        self._ = Field('en', seed=0)
+        Faker.seed(0)
 
     def generate_purchases(self, size=10000):
-        fake = Faker()
-        _ = Field('en')
+        fake = self.fake
+        _ = self._
+        end_date = datetime.fromisoformat('2021-01-01')
+        start_date = end_date - timedelta(days = 100)
         purchases = (
             lambda: {
-                'purchaseId': _('uuid'),
-                'purchaseTime': fake.date_time_between(start_date='-100d', end_date='now').strftime(
+                'purchaseId': fake.uuid4(),
+                'purchaseTime': fake.date_time_between(start_date=start_date, end_date=end_date).strftime(
                     "%Y-%m-%d %H:%M:%S"),
                 'billingCost': _('price')[1:],
                 'isConfirmed': _('boolean')
@@ -38,30 +47,33 @@ class DataGenerator:
         return schema.create(iterations=size)
 
     def generate_mobile_app_clickstream(self, purchases_list: list):
+        random = self.random
+        random_mimesis = self.random_mimesis
+        fake = self.fake
         # Generate sample data for generates purchases
         events_fullset = ['app_open', 'search_product', 'view_product_details', 'purchase', 'app_close']
         # TODO ADD events without purchases
         events_without_purchase = ['app_open', 'search_product', 'view_product_details', 'purchase', 'app_close']
         channels = ['Google Ads', 'Yandex Ads', 'Facebook Ads', 'Twitter Ads', 'VK Ads']
-        campaign_ids = Random().randints(5, 100, 999)
+        campaign_ids = random_mimesis.randints(5, 100, 999)
         res = []
 
         for purchase in purchases_list:
             # print(purchase['purchaseId'] + ' | ' + purchase['purchaseTime'])
-            purchase_date = datetime.datetime.strptime(purchase['purchaseTime'], "%Y-%m-%d %H:%M:%S")
-            user_id = Cryptographic.uuid()
-            app_open_date = purchase_date - datetime.timedelta(minutes=random.randint(10, 25),
+            purchase_date = datetime.strptime(purchase['purchaseTime'], "%Y-%m-%d %H:%M:%S")
+            user_id = fake.uuid4()
+            app_open_date = purchase_date - timedelta(minutes=random.randint(10, 25),
                                                                seconds=random.randint(1, 59))
-            search_date = app_open_date + datetime.timedelta(minutes=random.randint(5, 8),
+            search_date = app_open_date + timedelta(minutes=random.randint(5, 8),
                                                              seconds=random.randint(1, 59))
-            view_date = search_date + datetime.timedelta(minutes=random.randint(1, 3),
+            view_date = search_date + timedelta(minutes=random.randint(1, 3),
                                                          seconds=random.randint(1, 59))
-            app_close_date = purchase_date + datetime.timedelta(minutes=random.randint(1, 5))
+            app_close_date = purchase_date + timedelta(minutes=random.randint(1, 5))
 
             for type in events_fullset:
                 mobile_event = {
                     'userId': user_id,
-                    'eventId': Cryptographic.uuid(),
+                    'eventId': fake.uuid4(),
                     'eventType': type
                 }
                 if type == 'app_open':
@@ -82,6 +94,12 @@ class DataGenerator:
                 res.append(mobile_event)
         return res
 
+def write_data(dataset, dataset_name, num, args):
+    dataset_name_csv = f'{dataset_name}_{num}.csv.gz'
+    with gzip.open(os.path.join(args.output_path, dataset_name, dataset_name_csv), 'wt') as csvfile:
+        writer = csv.DictWriter(csvfile, dataset[0].keys())
+        writer.writeheader()
+        writer.writerows(dataset)
 
 def main():
     parser = argparse.ArgumentParser(prog='dlz_ingestion_service')
@@ -98,20 +116,9 @@ def main():
         recreate_local_folder(os.path.join(args.output_path, 'mobile_app_clickstream'))
         for num in range(0, 50):
             purchases = ingestion_starter.generate_purchases(size=10000)
-            purchase_name_csv = f'user_purchases_{num}.csv'
-            with open(os.path.join(args.output_path, 'user_purchases', purchase_name_csv), 'w') as csvfile:
-                writer = csv.DictWriter(csvfile, purchases[0].keys())
-                writer.writeheader()
-                writer.writerows(purchases)
-
             clickstream = ingestion_starter.generate_mobile_app_clickstream(purchases)
-            clickstream_name_csv = f'mobile_app_clickstream_{num}.csv'
-            with open(os.path.join(args.output_path, 'mobile_app_clickstream', clickstream_name_csv), 'w') as csvfile:
-                writer = csv.DictWriter(csvfile, clickstream[0].keys())
-                writer.writeheader()
-                writer.writerows(clickstream)
-
-
+            write_data(purchases, 'user_purchases', num, args)
+            write_data(clickstream, 'mobile_app_clickstream', num, args)
 
     except Exception:
         logging.error(traceback.format_exc())

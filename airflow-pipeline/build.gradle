@@ -1,0 +1,46 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+
+    // Apply the scala plugin to add support for Scala
+    id 'scala'
+
+    id 'idea'
+
+    id 'application'
+}
+
+ext.scala_version = "2.12.1"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // For running just with Spark Core
+    //implementation 'org.apache.spark:spark-core_2.12:3.0.0'
+    implementation 'org.scala-lang:scala-library:2.12.1'
+
+    // Spark SQL subsumes Spark Core
+    implementation 'org.apache.spark:spark-sql_2.12:3.0.0'
+
+    implementation group: 'com.github.pureconfig', name: 'pureconfig_2.12', version: '0.17.1'
+    implementation group: 'com.github.scopt', name: 'scopt_2.12', version: '4.0.1'
+    implementation group: 'org.scalactic', name: 'scalactic_2.12', version: '3.3.0-SNAP3'
+    implementation group: 'org.apache.hadoop', name: 'hadoop-common', version: '3.2.1'
+    implementation group: 'org.apache.hadoop', name: 'hadoop-aws', version: '3.2.1'
+
+    testImplementation group: 'org.scalatest', name: 'scalatest_2.12', version: '3.2.9'
+}
+
+application {
+    // Define the main class for the application.
+    mainClassName = 'marketing.Marketing'
+}
+
+shadowJar {
+    relocate 'shapeless', 'net.katsstuff.teamnightclipse.mirror.shade.shapeless'
+
+    zip64 true
+}
+
+

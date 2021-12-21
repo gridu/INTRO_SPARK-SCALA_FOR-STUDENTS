@@ -1,12 +1,8 @@
 from datetime import datetime
 from airflow import DAG
 
-from airflow.contrib.operators.emr_create_job_flow_operator import (
-    EmrCreateJobFlowOperator,
-)
-from airflow.contrib.operators.emr_terminate_job_flow_operator import (
-    EmrTerminateJobFlowOperator,
-)
+from airflow.contrib.operators.emr_create_job_flow_operator import EmrCreateJobFlowOperator
+from airflow.contrib.operators.emr_terminate_job_flow_operator import EmrTerminateJobFlowOperator
 from airflow.contrib.operators.emr_add_steps_operator import EmrAddStepsOperator
 from airflow.contrib.sensors.emr_step_sensor import EmrStepSensor
 
@@ -39,20 +35,18 @@ with DAG('marketing_data_lake',
             emr_conn_id="emr_default"
         )
 
-        step_adder = EmrAddStepsOperator(
+        add_spark_steps = EmrAddStepsOperator(
             task_id="add_steps",
             job_flow_id=create_emr_cluster.output,
             aws_conn_id="aws_default",
             steps=SPARK_STEPS
         )
 
-        last_step = len(SPARK_STEPS) - 1
-
-        step_checker = EmrStepSensor(
+        wait_for_completion = EmrStepSensor(
             task_id="watch_step",
             job_flow_id=create_emr_cluster.output,
             step_id="{{ task_instance.xcom_pull(task_ids='add_steps', key='return_value')["
-                + str(last_step)
+                + str(len(SPARK_STEPS) - 1)
                 + "] }}",
             aws_conn_id="aws_default"
         )
@@ -63,7 +57,5 @@ with DAG('marketing_data_lake',
                 aws_conn_id="aws_default"
         )
 
-        step_adder >> step_checker >> terminate_emr_cluster
-
-        
+        add_spark_steps >> wait_for_completion >> terminate_emr_cluster
 

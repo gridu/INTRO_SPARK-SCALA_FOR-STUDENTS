@@ -17,10 +17,10 @@
 
 ### Prepage amazon S3
 
-Create your own directory into the common bucket “student_labs” on S3 to persist job artifacts.
+Create your own directory into the common bucket “student-labs” on S3 to persist job artifacts.
 URI to access the directory can look like:
 
-```s3a://student_labs/ivanov```
+```s3a://student-labs/ivanov```
 
 ### Codebase preparation
 

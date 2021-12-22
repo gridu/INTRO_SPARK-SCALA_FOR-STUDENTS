@@ -10,7 +10,7 @@
     gradle init
 
     
-1.3 Use build.gradle from airflow-pipeline directory
+1.3 Use build.gradle from airflow-pipeline directory. Change mainClassName variable.
 
 
 ## Setup airflow project

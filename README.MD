@@ -10,10 +10,10 @@ The requirements that apply to project:
 * A spark application has to execute a particular task(=job) based on input arguments
 * Use the library scopt to parse the command line arguments
 * Content of README files should be:
-* Common description of project
-* How run unit tests
-* How run tasks using spark-submit
-* How deploy jobs using Airflow
+  * Common description of project
+  * How run unit tests
+  * How run tasks using spark-submit
+  * How deploy jobs using Airflow
 * Will be a plus: Integrational tests that cover the main method.
   
 ## Domain

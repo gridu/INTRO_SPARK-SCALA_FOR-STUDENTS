@@ -1,4 +1,4 @@
-##1. Init project
+## Init project
 
 1.1 Install gradle
     
@@ -13,16 +13,16 @@
 1.3 Use build.gradle from airflow-pipeline directory
 
 
-##2. Setup airflow project
+## Setup airflow project
 
-###Stage 1. Prepage amazon S3
+### Prepage amazon S3
 
 Create your own directory into the common bucket “student_labs” on S3 to persist job artifacts.
 URI to access the directory can look like:
 
-s3a://student_labs/ivanov
+```s3a://student_labs/ivanov```
 
-###Stage 2. Codebase preparation
+### Codebase preparation
 
 1. Change patches in the file configuration according to your S3 directory. Notice that path must be started with s3a:// to use S3A committer.
 
@@ -41,7 +41,7 @@ s3a://student_labs/ivanov
 
 4. Upload the compiled jar into your S3 directory.
 
-###Stage 3. Prepare Airflow
+### Prepare Airflow
 
 1. Create the directory “dags” and copy the file spark_dag.py inside
 2. Run the docker compose (docker-compose up)

@@ -79,8 +79,7 @@ Before processing the data must be prepared
 
 ### 2. Prepare structured data: build Purchases Attribution Projection
 
-   *Companies usually persist this type of data into the structured layer of Data Lake.
-   Reread the part about a structured zone from the [article](https://medium.com/@lackshub/design-patterns-for-data-lakes-d6da14a0af1f "article").
+   *Companies usually persist this type of data into the structured layer of Data Lake. Reread the part about a structured zone from the [article](https://medium.com/@lackshub/design-patterns-for-data-lakes-d6da14a0af1f "article")*
 
    The projection is dedicated to enabling a subsequent analysis of marketing campaigns and channels. 
 
@@ -107,7 +106,7 @@ Requirements for implementation of the projection building logic:
 ### 3. Calculate Marketing Campaigns And Channels Statistics
 
 *Data in this layer is ready for reporting and consumption by data analytics.
-Reread the part about a trusted zone from the [article](https://medium.com/@lackshub/design-patterns-for-data-lakes-d6da14a0af1f "article").*
+Reread the part about a trusted zone from the [article](https://medium.com/@lackshub/design-patterns-for-data-lakes-d6da14a0af1f "article")*
 
 Use the purchases-attribution projection to build aggregates that provide the following insights:
 

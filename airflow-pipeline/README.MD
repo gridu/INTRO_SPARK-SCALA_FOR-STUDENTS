@@ -26,13 +26,6 @@ URI to access the directory can look like:
 
 1. Change patches in the file configuration according to your S3 directory. Notice that path must be started with s3a:// to use S3A committer.
 
-   Add patches to datasets:
-
-   ```s3a://scala-spark-course/dataset/mobile_app_clickstream/mobile_app_clickstream_0.csv.gz```
-   
-   ```s3a://scala-spark-course/dataset/user_purchases/user_purchases_0.csv.gz``` 
-
-
 2. Remove from the SparkSession configuration the master’s settings.
 
 3. Compile the fat jar with dependencies and the configuration file by using command

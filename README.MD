@@ -10,10 +10,10 @@ The requirements that apply to project:
 * A spark application has to execute a particular task(=job) based on input arguments
 * Use the library scopt to parse the command line arguments
 * Content of README files should be:
-* Common description of project
-* How run unit tests
-* How run tasks using spark-submit
-* How deploy jobs using Airflow
+  * Common description of project
+  * How run unit tests
+  * How run tasks using spark-submit
+  * How deploy jobs using Airflow
 * Will be a plus: Integrational tests that cover the main method.
   
 ## Domain
@@ -126,5 +126,5 @@ Use the purchases-attribution projection to build aggregates that provide the fo
 Marketing department decided to see changes every 5 minutes. 
 In order to achieve this goal you should create a data pipeline with Airflow.
 
-The instruction you can find in the airflow-pipeline directory.
+The instruction you can find in the [airflow-pipeline directory](airflow-pipeline/README.MD).
 

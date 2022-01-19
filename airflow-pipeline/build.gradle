@@ -32,6 +32,7 @@ dependencies {
     implementation group: 'org.scalactic', name: "scalactic_$scalaSuffix", version: '3.3.0-SNAP3'
     implementation group: 'org.apache.hadoop', name: 'hadoop-common', version: '3.2.1'
     implementation group: 'org.apache.hadoop', name: 'hadoop-aws', version: '3.2.1'
+    implementation group: 'org.apache.hadoop', name: 'hadoop-client', version: '3.2.1'
 
     testImplementation group: 'org.scalatest', name: "scalatest_$scalaSuffix", version: '3.2.9'
 }

@@ -18,7 +18,7 @@
 ### Prepage amazon S3
 
 1. Open the page https://aws.griddynamics.net and login with the corporate account.
-Click "(Re)Generate password for all your AWS account" and then use this password and corporate login (see in your email: login@griddynamics.com) to login into aws-gridu-spark-scala account by using appropriate sign-in link. 
+Click "(Re)Generate password for all your AWS account" and then use this password and corporate login (see in your email: login @griddynamics.com) to login into aws-gridu-spark-scala account by using appropriate sign-in link. 
 2. Create your own directory into the common bucket “student-labs” on S3 to persist job artifacts.
 URI to access the directory can look like:
 
